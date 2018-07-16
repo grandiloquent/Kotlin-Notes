@@ -16,6 +16,7 @@ import kotlin.reflect.KProperty
 fun String.getFilenameExtension() = substring(lastIndexOf(".") + 1)
 fun isMarshmallowPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 fun isKitkatPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+fun isIceCreamSandwichPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
 
 val Activity.colorPrimary: Int
     get() {

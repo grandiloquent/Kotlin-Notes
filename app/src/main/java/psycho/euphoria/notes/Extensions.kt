@@ -34,7 +34,7 @@ fun initToolbar(toolbar: Toolbar?, activity: AppCompatActivity?) {
         collapseActionView()
     }
     activity.supportActionBar?.apply {
-        setHomeAsUpIndicator(R.drawable.abc_ic_clear_material)
+        setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha)
         setDisplayHomeAsUpEnabled(true)
     }
 
