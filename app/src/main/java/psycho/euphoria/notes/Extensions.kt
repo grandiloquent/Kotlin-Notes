@@ -4,7 +4,26 @@ import android.app.Activity
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.support.v4.view.ViewCompat
+import android.support.v4.view.ViewCompat.setPivotY
+import android.view.View
 
+
+fun clearAnimationView(v: View) {
+
+
+    ViewCompat.setAlpha(v, 1f)
+    ViewCompat.setScaleY(v, 1f)
+    ViewCompat.setScaleX(v, 1f)
+    ViewCompat.setTranslationY(v, 0f)
+    ViewCompat.setTranslationX(v, 0f)
+    ViewCompat.setRotation(v, 0f)
+    ViewCompat.setRotationY(v, 0f)
+    ViewCompat.setRotationX(v, 0f)
+    v.setPivotY(v.getMeasuredHeight() / 2.0f)
+    ViewCompat.setPivotX(v, v.getMeasuredWidth() / 2.0f)
+    ViewCompat.animate(v).interpolator = null
+}
 
 fun changeTheme(activity: Activity?, theme: Theme) {
     if (activity == null)

@@ -11,6 +11,8 @@ import android.util.TypedValue
 import android.widget.Toast
 import com.squareup.leakcanary.LeakCanary
 import java.io.File
+import java.text.DateFormat
+import java.util.*
 import kotlin.reflect.KProperty
 
 fun String.getFilenameExtension() = substring(lastIndexOf(".") + 1)
@@ -31,6 +33,11 @@ val Activity.colorPrimaryDark: Int
         return t.data
     }
 
+
+fun Long.toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
+    val df = DateFormat.getDateInstance(dateFormat, Locale.getDefault())
+    return df.format(this)
+}
 
 fun Activity.showErrorToast(msg: String, length: Int = Toast.LENGTH_LONG) {
     toast(String.format("An error occurred: %s", msg), length)
