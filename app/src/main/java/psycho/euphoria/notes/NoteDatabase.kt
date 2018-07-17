@@ -19,12 +19,12 @@ class NoteDatabase(context: Context = App.instance) : @JvmOverloads SQLiteOpenHe
     override fun onCreate(db: SQLiteDatabase) {
 
         db.setLocale(Locale.CHINA)
-        db.execSQL("CREATE TABLE IF NOT EXISTS `notes` ( `id` INTEGER, `title` TEXT, `content` TEXT, `createTime` INTEGER, `lastOprTime` INTEGER, `trash` INTEGER, PRIMARY KEY(`id`) )")
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ( $COL_ID INTEGER, $COL_TITLE TEXT, $COL_CONTENT TEXT, `createTime` INTEGER, `lastOprTime` INTEGER, `trash` INTEGER, PRIMARY KEY(`id`) )")
     }
 
     fun listNotes(): ArrayList<Note> {
         val notes = ArrayList<Note>()
-        val cursor = readableDatabase.rawQuery("SELECT id,title FROM notes WHERE trash = 0 ORDER BY lastOprTime", null)
+        val cursor = readableDatabase.rawQuery("SELECT $COL_ID,$COL_TITLE FROM $TABLE_NAME WHERE $COL_TRASH = 0 ORDER BY $COL_LASTOPRTIME", null)
         try {
 
             while (cursor.moveToNext()) {
@@ -48,10 +48,10 @@ class NoteDatabase(context: Context = App.instance) : @JvmOverloads SQLiteOpenHe
     }
 
     fun queryNote(note: Note) {
-        val cursor = readableDatabase.rawQuery("SELECT cotent FROM notes WHERE id = ?", arrayOf("$note.id"))
+        val cursor = readableDatabase.rawQuery("SELECT $COL_CONTENT FROM $TABLE_NAME WHERE $COL_ID = ?", arrayOf("${note.id}"))
         try {
-
-            note.content = cursor.getString(0)
+            if (cursor.moveToNext())
+                note.content = cursor.getString(0)
         } finally {
             cursor.close()
         }
@@ -68,7 +68,11 @@ class NoteDatabase(context: Context = App.instance) : @JvmOverloads SQLiteOpenHe
     }
 
     fun deleteNote(note: Note) {
-        writableDatabase.delete(TABLE_NAME, "id = ?", arrayOf("${note.id}"))
+        val values = ContentValues()
+        values.put("$COL_TRASH", 1)
+        writableDatabase.updateWithOnConflict(TABLE_NAME, values, "$COL_ID = ?", arrayOf("${note.id}"), SQLiteDatabase.CONFLICT_IGNORE)
+
+        //  writableDatabase.delete(TABLE_NAME, "$COL_ID = ?", arrayOf("${note.id}"))
     }
 
     fun updateNote(note: Note) {
@@ -76,8 +80,7 @@ class NoteDatabase(context: Context = App.instance) : @JvmOverloads SQLiteOpenHe
         values.put("title", note.title)
         values.put("content", note.content)
         values.put("lastOprTime", note.lastOprTime)
-        values.put("trash", note.trash)
-        writableDatabase.updateWithOnConflict(TABLE_NAME, values, "id = ?", arrayOf("${note.id}"), SQLiteDatabase.CONFLICT_IGNORE)
+        writableDatabase.updateWithOnConflict(TABLE_NAME, values, "$COL_ID = ?", arrayOf("${note.id}"), SQLiteDatabase.CONFLICT_IGNORE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
@@ -87,6 +90,12 @@ class NoteDatabase(context: Context = App.instance) : @JvmOverloads SQLiteOpenHe
     companion object {
         private const val TABLE_NAME = "notes"
         private const val DATABASE_VERSION = 1
+        private const val COL_CONTENT = "content"
+        private const val COL_ID = "id"
+        private const val COL_TRASH = "trash"
+        private const val COL_LASTOPRTIME = "lastOprTime"
+        private const val COL_TITLE = "title"
+
         private var instance: NoteDatabase? = null
         fun getInstance() = instance ?: synchronized(this) {
             NoteDatabase().also { instance = it }

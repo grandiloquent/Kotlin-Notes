@@ -12,4 +12,9 @@
     <string name="font_roboto_regular">sans-serif</string>
     <string name="action_search">Search</string>
     <string name="add_note">Add Note</string>
+
+    <string name="note_update">Update Note</string>
+    <string name="note_delete">Delete Note</string>
+    <string name="menu_save_as_image">Save As Image</string>
+    <string name="menu_save_as_html">Save As Html</string>
 </resources>
