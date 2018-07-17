@@ -8,7 +8,7 @@
         android:name=".App"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Theme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -20,7 +20,7 @@
         <activity android:name=".NoteActivity" />
         <activity
             android:name=".PreviewNoteActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme" />
     </application>
 
 </manifest>

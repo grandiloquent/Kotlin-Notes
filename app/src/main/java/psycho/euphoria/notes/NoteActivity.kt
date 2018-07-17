@@ -70,6 +70,12 @@ class NoteActivity : AppCompatActivity() {
         button_title.setOnClickListener {
             insertText { v -> formatTitle(v) }
         }
+        button_add.setOnClickListener {
+            insertText { v -> "+${v.trim()}" }
+        }
+        button_divider.setOnClickListener {
+            insertText { v -> "/${v.trim()}" }
+        }
     }
 
     private fun insertText(transform: (String) -> String) {

@@ -13,4 +13,20 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccentLight</item>
+        <item name="android:textColorPrimary">@color/textColorPrimaryLight</item>
+        <item name="android:textColorSecondary">@color/textColorSecondaryLight</item>
+        <item name="android:textColorHint">@color/textColorHintLight</item>
+        <item name="android:textColorPrimaryInverse">@color/textColorPrimaryDark</item>
+        <item name="android:textColorSecondaryInverse">@color/textColorSecondaryDark</item>
+        <item name="android:textColorHintInverse">@color/textColorHintDark</item>
+        <item name="android:colorBackground">@color/backgroundLight</item>
+        <item name="android:listSelector">?colorAccent</item>
+        <item name="android:divider">@color/dividerLight</item>
+        <item name="android:listDivider">@drawable/line_divider_light</item>
+    </style>
+
 </resources>

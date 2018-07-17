@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="action_search">搜索</string>
+    <string name="add_note">添加笔记</string>
     <string name="app_name">笔记</string>
-    <string name="share_via">Share via</string>
-    <string name="no_app_found">No valid app found</string>
-    <string name="maximum_share_reached">You cannot share this much content at once</string>
-    <string name="unknown_error_occurred">An unknown error occurred</string>
-
-    <string name="note_delete">删除笔记</string>
-    <string name="menu_save_as_image">另存为图片</string>
+    <string name="label_settings">设置</string>
     <string name="menu_save_as_html">另存为Html</string>
+    <string name="menu_save_as_image">另存为图片</string>
+    <string name="note_delete">删除笔记</string>
+    <string name="note_update">更新笔记</string>
+
 </resources>
