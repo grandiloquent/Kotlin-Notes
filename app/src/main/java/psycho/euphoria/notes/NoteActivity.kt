@@ -3,11 +3,18 @@ package psycho.euphoria.notes
 import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_note.*
+import org.javia.arity.Symbols
+import org.javia.arity.SyntaxException
+import org.javia.arity.Util
+import java.util.regex.Pattern
+
 
 class NoteActivity : AppCompatActivity() {
     private var mNote: Note = Note.newInstance()
-
+    private lateinit var mSymbols: Symbols
 
     private fun formatAsterisk(s: String): String {
         return if (s.isBlank())
@@ -23,6 +30,35 @@ class NoteActivity : AppCompatActivity() {
             "\n```\n${s.trim()}\n```\n"
         else
             "`${s.trim()}`"
+    }
+
+    private fun calculateExpression() {
+        if (mSymbols == null) {
+            mSymbols = Symbols()
+        }
+        val input = edit_text.getText().toString()
+        val pattern = Pattern.compile("[0-9\\+\\-\\*\\.\\(\\)\\=/]+")
+        val matcher = pattern.matcher(input.split("\\={5}".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[0])
+        val stringBuilder = StringBuilder()
+        stringBuilder.append(input).append("\n\n\n=====\n\n\n")
+        val results = ArrayList<Double>()
+        while (matcher.find()) {
+            stringBuilder.append(matcher.group()).append(" => ")
+            try {
+                val result = Util.doubleToString(mSymbols.eval(matcher.group()), -1)
+                results.add(java.lang.Double.parseDouble(result))
+                stringBuilder.append(result).append("\n\n")
+            } catch (e: SyntaxException) {
+                stringBuilder.append(e)
+            }
+
+        }
+        var addAll = 0.0
+        for (i in results) {
+            addAll += i
+        }
+        stringBuilder.append("相加总结果：").append(addAll).append("\n\n\n")
+        edit_text.setText(stringBuilder.toString())
     }
 
     private fun formatDash(s: String): String {
@@ -54,7 +90,7 @@ class NoteActivity : AppCompatActivity() {
             NoteDatabase.getInstance().queryNote(mNote)
             edit_text.setText(mNote.content)
         }
-
+        setSupportActionBar(toolbar)
         button_asterisk.setOnClickListener {
             insertText { v -> formatAsterisk(v) }
         }
@@ -76,6 +112,24 @@ class NoteActivity : AppCompatActivity() {
         button_divider.setOnClickListener {
             insertText { v -> "/${v.trim()}" }
         }
+        button_square_brackets.setOnClickListener {
+            insertText { v -> "[${v.trim()}]" }
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menu.add(0, MENU_CALCULATE, 0, "")
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            MENU_CALCULATE -> calculateExpression()
+        }
+
+        return true
     }
 
     private fun insertText(transform: (String) -> String) {
@@ -120,6 +174,7 @@ class NoteActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val MENU_CALCULATE = 1
         const val KEY_NOTE_ID = "note_id"
     }
 }

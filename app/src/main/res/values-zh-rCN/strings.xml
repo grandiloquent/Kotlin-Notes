@@ -9,5 +9,6 @@
     <string name="menu_save_as_image">另存为图片</string>
     <string name="note_delete">删除笔记</string>
     <string name="note_update">更新笔记</string>
+    <string name="menu_calculate">计算</string>
 
 </resources>

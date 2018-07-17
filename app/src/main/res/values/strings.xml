@@ -12,4 +12,5 @@
     <string name="note_delete">Delete Note</string>
     <string name="note_update">Update Note</string>
 
+    <string name="menu_calculate">Calculate</string>
 </resources>
