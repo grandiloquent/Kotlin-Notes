@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/material_layout_keylines_screen_edge_margin"
+    android:paddingRight="@dimen/material_layout_keylines_screen_edge_margin"
+    android:paddingTop="@dimen/material_component_lists_padding_above_list">
+
+
+    <TextView
+        android:id="@+id/note_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textAppearance="@style/TextAppearance.Regular.Body1"
+        tools:text="Manga title"/>
+
+
+
+</RelativeLayout>

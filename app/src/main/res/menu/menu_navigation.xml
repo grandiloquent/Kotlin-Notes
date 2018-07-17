@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/group_feature"
+           android:checkableBehavior="single">
+        <item
+            android:checked="true"
+            android:id="@+id/nav_drawer_library"
+            android:icon="@drawable/ic_book_black_24dp"
+            android:title="@string/label_library" />
+
+    </group>
+    <group android:id="@+id/group_settings"
+           android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_drawer_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/label_settings"
+            android:checkable="false" />
+    </group>
+</menu>

@@ -2,69 +2,106 @@ package psycho.euphoria.notes
 
 import android.Manifest
 import android.content.Intent
-import android.content.res.TypedArray
+import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.TypedValue
-import android.view.ActionMode
-import android.view.WindowManager
-import com.readystatesoftware.systembartint.SystemBarTintManager
-import kotlinx.android.synthetic.main.toolbar_layout.*
+import android.support.v7.graphics.drawable.DrawerArrowDrawable
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
+import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    var prefsTheme by DelegatesExt.preference(this, "PREFS_THEME", 0)
+    var prefsQuery: String by DelegatesExt.preference(this, "prefs_query", "")
 
+    private var mDrawerArrow: DrawerArrowDrawable? = null
+    private val mNoteAdapter = NoteAdapter()
 
-    override fun finish() {
-        super.finish()
-        showActivityExitAnim()
-    }
     private fun initialize() {
-        initializeWindow()
         setContentView(R.layout.activity_main)
-        initializeToolbar()
+        setSupportActionBar(toolbar)
+        mDrawerArrow = DrawerArrowDrawable(this).apply {
+            color = Color.WHITE
+        }
+        toolbar.navigationIcon = mDrawerArrow
+
+        nav_view.setNavigationItemSelectedListener { ite ->
+
+            true
+        }
+
+        toolbar.setNavigationOnClickListener {
+            drawer.openDrawer(GravityCompat.START)
+        }
+        initializeRecyclerView()
     }
-    private fun initializeTheme() {
-        changeTheme(this, Theme.mapValueToTheme(prefsTheme))
+
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
     }
-    private fun initializeToolbar() {
-        initToolbar(toolbar, this)
-    }
-    private fun initializeWindow() {
-        if (isKitkatPlus()) {
-            window.run {
-                addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-                val tintManager = SystemBarTintManager(this@MainActivity)
-                tintManager.run {
-                    setStatusBarTintColor(colorPrimary)
-                    isStatusBarTintEnabled = true
-                }
-            }
+    private fun initializeRecyclerView() {
+        mNoteAdapter.setItems(NoteDatabase.getInstance().listNotes())
+        recycler.run {
+            adapter = mNoteAdapter
+            this.layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+        menu.findItem(R.id.action_search).apply {
+
+            val searchView = actionView as SearchView
+            if (prefsQuery.isNotBlank()) {
+                expandActionView()
+                searchView.setQuery(prefsQuery, true)
+                searchView.clearFocus()
+            }
+            searchView.setOnQueryTextFocusChangeListener { view, b ->
+                toast(searchView.query.toString())
+            }
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+
+        R.id.action_add_note -> {
+
+            val intent = Intent(this,NoteActivity::class.java)
+            startActivity(intent)
+            true
+        }
+        else -> true
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        parseIntent(intent)
-        showActivityInAnim()
-        initializeTheme()
         super.onCreate(savedInstanceState)
         if (isMarshmallowPlus()) {
             requestPermissions(arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             ), REQUEST_PERMISSIONS_CODE);
         } else initialize()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        nav_view?.setNavigationItemSelectedListener(null)
+        toolbar?.setNavigationOnClickListener(null)
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         initialize()
-    }
-    private fun parseIntent(i: Intent) {
-    }
-    private fun showActivityExitAnim() {
-        overridePendingTransition(R.anim.activity_exit_anim, R.anim.activity_up_down_anim)
-    }
-    private fun showActivityInAnim() {
-        overridePendingTransition(R.anim.activity_down_up_anim, R.anim.activity_exit_anim)
     }
 
     companion object {

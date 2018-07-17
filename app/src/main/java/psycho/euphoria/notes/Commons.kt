@@ -7,9 +7,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaScannerConnection
 import android.os.Build
+import android.support.annotation.LayoutRes
+import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.squareup.leakcanary.LeakCanary
+import kotlinx.android.extensions.LayoutContainer
 import java.io.File
 import java.text.DateFormat
 import java.util.*
@@ -19,6 +25,7 @@ fun String.getFilenameExtension() = substring(lastIndexOf(".") + 1)
 fun isMarshmallowPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 fun isKitkatPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
 fun isIceCreamSandwichPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
+fun getTimeStamp(): Long = System.currentTimeMillis() / 1000
 
 val Activity.colorPrimary: Int
     get() {
@@ -34,9 +41,14 @@ val Activity.colorPrimaryDark: Int
     }
 
 
+
 fun Long.toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
     val df = DateFormat.getDateInstance(dateFormat, Locale.getDefault())
     return df.format(this)
+}
+
+fun ViewGroup.inflate(@LayoutRes layout: Int, attachToRoot: Boolean = false): View {
+    return LayoutInflater.from(context).inflate(layout, this, attachToRoot)
 }
 
 fun Activity.showErrorToast(msg: String, length: Int = Toast.LENGTH_LONG) {
@@ -783,4 +795,10 @@ class Preference<T>(private val context: Context, private val name: String,
             else -> throw IllegalArgumentException("This type can't be saved into Preferences")
         }.apply()
     }
+}
+
+abstract class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view), LayoutContainer {
+
+    override val containerView: View?
+        get() = itemView
 }
