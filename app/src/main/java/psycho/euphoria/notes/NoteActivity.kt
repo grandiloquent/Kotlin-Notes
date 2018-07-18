@@ -35,7 +35,7 @@ class NoteActivity : AppCompatActivity() {
 
     private fun calculateExpression() {
 
-        val input = edit_text.getText().toString()
+        val input = edit_text.string.substringBefore("\n\n\n=====\n\n\n")
         val pattern = Pattern.compile("[0-9\\+\\-\\*\\.\\(\\)\\=/]+")
         val matcher = pattern.matcher(input.split("\\={5}".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[0])
         val stringBuilder = StringBuilder()
