@@ -1,4 +1,4 @@
 "# Kotlin-Notes" 
 
 ## Screenshot
-![](Screenshot_1.jpg)
+![](screenshot/Screenshot_1.jpg)
