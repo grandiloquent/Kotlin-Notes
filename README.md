@@ -1,4 +1,3 @@
 "# Kotlin-Notes" 
 
-## Screenshot
-![](screenshot/Screenshot_1.jpg)
+<img src="screenshot/Screenshot_1.jpg" style="height:30%;width:30%">
