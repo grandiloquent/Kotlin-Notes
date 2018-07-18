@@ -24,7 +24,7 @@ class NoteDatabase(context: Context = App.instance) : @JvmOverloads SQLiteOpenHe
 
     fun listNotes(): ArrayList<Note> {
         val notes = ArrayList<Note>()
-        val cursor = readableDatabase.rawQuery("SELECT $COL_ID,$COL_TITLE FROM $TABLE_NAME WHERE $COL_TRASH = 0 ORDER BY $COL_LASTOPRTIME", null)
+        val cursor = readableDatabase.rawQuery("SELECT $COL_ID,$COL_TITLE FROM $TABLE_NAME WHERE $COL_TRASH = 0 ORDER BY $COL_LASTOPRTIME DESC", null)
         try {
 
             while (cursor.moveToNext()) {

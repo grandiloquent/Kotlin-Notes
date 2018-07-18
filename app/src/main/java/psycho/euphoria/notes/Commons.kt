@@ -13,6 +13,8 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import com.squareup.leakcanary.LeakCanary
 import kotlinx.android.extensions.LayoutContainer
@@ -20,6 +22,9 @@ import java.io.File
 import java.text.DateFormat
 import java.util.*
 import kotlin.reflect.KProperty
+
+val EditText.string: String get() = text.toString()
+val EditText.readabableString: String get() = text.toString()
 
 fun String.getFilenameExtension() = substring(lastIndexOf(".") + 1)
 fun isMarshmallowPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
@@ -41,6 +46,15 @@ val Activity.colorPrimaryDark: Int
     }
 
 
+fun Activity.showKeyboard(et: EditText) {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT)
+}
+
+fun Activity.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
 
 fun Long.toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
     val df = DateFormat.getDateInstance(dateFormat, Locale.getDefault())

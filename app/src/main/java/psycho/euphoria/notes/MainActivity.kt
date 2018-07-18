@@ -21,23 +21,15 @@ class MainActivity : AppCompatActivity() {
 
     var prefsQuery: String by DelegatesExt.preference(this, "prefs_query", "")
 
-    private var mDrawerArrow: DrawerArrowDrawable? = null
     private val mNoteAdapter = NoteAdapter()
 
 
     private fun initialize() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        mDrawerArrow = DrawerArrowDrawable(this).apply {
-            color = Color.WHITE
-        }
-        toolbar.navigationIcon = mDrawerArrow
-        nav_view.setNavigationItemSelectedListener { ite ->
-            true
-        }
-        toolbar.setNavigationOnClickListener {
-            drawer.openDrawer(GravityCompat.START)
-        }
+
+
+
         initializeRecyclerView()
     }
 
@@ -112,14 +104,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        nav_view?.setNavigationItemSelectedListener(null)
         toolbar?.setNavigationOnClickListener(null)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_add_note -> {
             val intent = Intent(this, NoteActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_NOTE_ACTIVITY)
             true
         }
         else -> true

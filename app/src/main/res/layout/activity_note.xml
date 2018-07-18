@@ -28,7 +28,7 @@
         android:layout_height="56dp"
         android:background="#f2f2f2"
         android:orientation="horizontal"
-        android:weightSum="7">
+        android:weightSum="8">
 
         <Button
             android:id="@+id/button_title"

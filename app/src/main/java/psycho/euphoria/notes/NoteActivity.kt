@@ -14,8 +14,9 @@ import java.util.regex.Pattern
 
 class NoteActivity : AppCompatActivity() {
     private var mNote: Note = Note.newInstance()
-    private lateinit var mSymbols: Symbols
-
+    private val mSymbols: Symbols = Symbols()
+    private var mUpdated = false
+    private var mFinished = true
     private fun formatAsterisk(s: String): String {
         return if (s.isBlank())
             "*"
@@ -33,9 +34,7 @@ class NoteActivity : AppCompatActivity() {
     }
 
     private fun calculateExpression() {
-        if (mSymbols == null) {
-            mSymbols = Symbols()
-        }
+
         val input = edit_text.getText().toString()
         val pattern = Pattern.compile("[0-9\\+\\-\\*\\.\\(\\)\\=/]+")
         val matcher = pattern.matcher(input.split("\\={5}".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[0])
@@ -119,7 +118,7 @@ class NoteActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.add(0, MENU_CALCULATE, 0, "")
+        menu.add(0, MENU_CALCULATE, 0, resources.getString(R.string.menu_calculate))
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -134,13 +133,21 @@ class NoteActivity : AppCompatActivity() {
 
     private fun insertText(transform: (String) -> String) {
         val start = edit_text.selectionStart
-        val end = edit_text.selectionEnd
-        val text = edit_text.text
-        val selected = text.substring(start, end)
-        val startString = if (start !== 0) text.substring(0, start) else "";
-        val endString = if (text.length - 1 !== end) text.substring(end, text.length) else ""
-        edit_text.setText(startString + transform(selected) + endString)
-        edit_text.setSelection(start)
+
+        if (edit_text.string.isBlank()) {
+            edit_text.setText(transform(""))
+        } else {
+            var str = edit_text.string
+            val end = edit_text.selectionEnd
+            if (start == end)
+                edit_text.setText(str.slice(IntRange(0, start - 1)) + transform("") + str.slice(IntRange(end, str.length - 1)))
+            else
+                edit_text.setText(str.slice(IntRange(0, start - 1)) + transform(str.slice(IntRange(start, end - 1))) + str.slice(IntRange(end, str.length - 1)))
+
+        }
+
+        if (start + 1 < edit_text.text.length)
+            edit_text.setSelection(start + 1)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,7 +156,8 @@ class NoteActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        updateNote()
+        if (!mFinished)
+            updateNote();
         super.onPause()
     }
 
@@ -161,16 +169,26 @@ class NoteActivity : AppCompatActivity() {
             mNote.lastOprTime = getTimeStamp()
             mNote.trash = 0
             NoteDatabase.getInstance().insertNote(mNote)
-            setResult(Activity.RESULT_OK)
+            mUpdated = true
         } else if (edit_text.text.isNotBlank()) {
             mNote.title = edit_text.text.trim().toString().substringBefore('\n').trim()
             mNote.content = edit_text.text.trim().toString()
             mNote.lastOprTime = getTimeStamp()
             NoteDatabase.getInstance().updateNote(mNote)
-            setResult(Activity.RESULT_OK)
+            mUpdated = true
         } else {
-            setResult(Activity.RESULT_CANCELED)
+            mUpdated = false
         }
+    }
+
+
+    override fun finish() {
+        updateNote()
+        if (mUpdated) {
+            setResult(Activity.RESULT_OK)
+        }
+        mFinished = true
+        super.finish()
     }
 
     companion object {
